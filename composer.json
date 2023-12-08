@@ -1,0 +1,24 @@
+{
+    "name": "fakellyh/bing-api-php",
+    "description": "Simple reverse engineering to BingAI using PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "fakellgit",
+            "email": "fakellyh@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Fakell\\Bing\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.2.5",
+        "guzzlehttp/guzzle": "^7.0",
+        "symfony/event-dispatcher": "^6.3",
+        "react/event-loop": "^1.5",
+        "ratchet/pawl": "^0.4.1"
+    }
+}
