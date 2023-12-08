@@ -16,10 +16,13 @@ class Bing {
     private $convSignature;
 
     public function __construct(){
-        $_ENV["debug"] = false;
         $this->client = new Client;
+        $this->debug();
     }
 
+    public function debug($bool = false){
+        $_ENV["debug"] = $bool;
+    }
     private function create_conversation(){
         try {
             $res = $this->client->send("GET", "turing/conversation/create?bundleVersion=1.1199.4");
