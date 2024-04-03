@@ -2,7 +2,7 @@
     "name": "fakellyh/bing-api-php",
     "description": "Simple reverse engineering to BingAI using PHP",
     "type": "library",
-    "version" : "1.1.0",
+    "version" : "1.2.1",
     "license": "MIT",
     "authors": [
         {
