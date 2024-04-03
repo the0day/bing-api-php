@@ -19,7 +19,7 @@ class ClientSocket
     private EventDispatcherInterface $dispacther;
 
     public function __construct($url, EventDispatcherInterface $dispacther){
-        $this->dispacther =$dispacther;
+        $this->dispacther = $dispacther;
         $this->url = $url;
         $this->loop = Loop::get();
         $this->connector = new Connector($this->loop);
@@ -56,12 +56,8 @@ class ClientSocket
     public function send(string $data){
         // If the connection is not yet established, queue the message
         if ($this->websocket === null) {
-            if($_ENV["debug"])
-                echo "Queuing message .\n";
             $this->pendingMessage [] = $data;
         } else {
-            if($_ENV["debug"])
-                echo "Sending message...\n";
             $this->websocket->send($data);
         }
     }
@@ -70,7 +66,6 @@ class ClientSocket
         if ($this->websocket !== null) {
             $this->websocket->close();
         }
-
         $this->loop->stop();
     }
 }

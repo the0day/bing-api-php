@@ -6,7 +6,7 @@ namespace Fakell\Bing\Constant;
 
 
 
-interface Defaults {
+class Defaults {
 
 
     const OPTIONS_SET = [

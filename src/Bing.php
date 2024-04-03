@@ -13,32 +13,40 @@ class Bing {
 
     private Client $client;
     private $conversation;
+    private $dispatcher;
     private $convSignature;
+    private ClientSocket $clientSocket;
+    private $response = [];
 
     public function __construct(){
         $this->client = new Client;
+        $this->dispatcher = new EventDispatcher;
         $this->debug();
     }
 
     public function debug($bool = false){
         $_ENV["debug"] = $bool;
     }
-    private function create_conversation(){
+
+    private function initialize(){
         try {
-            $res = $this->client->send("GET", "turing/conversation/create?bundleVersion=1.1199.4");
+            $res = $this->client->send("GET", "turing/conversation/create?bundleVersion=1.1655.1");
             $this->conversation = json_decode($res->getBody()->getContents(), true);
             $this->convSignature = $res->getHeaders()["X-Sydney-EncryptedConversationSignature"][0];
+            $this->clientSocket = new ClientSocket('wss://sydney.bing.com/sydney/ChatHub?sec_access_token=' . urlencode($this->convSignature), $this->dispatcher);
         } catch (GuzzleException $e) {
             throw new \Exception("Can't create conversation.\n\nReason : " . $e->getMessage());
         }
     }
 
-    public function ask($query, $tones = Tones::BALANCED){
-        
-        if($_ENV["debug"])
-            echo "Creating conversation...\n";
-        $this->create_conversation();
-
+    /**
+     * Create Body
+     *
+     * @param string $query
+     * @param string $tones
+     * @return array
+     */
+    private function createBody($query, $tones){
         $req_id = md5(uniqid("", true));
         $ip_adress = rand(0, 255) . '.' . rand(0, 255) . '.' . rand(0, 255) . '.' . rand(0, 255);
         $body = [
@@ -78,25 +86,26 @@ class Bing {
             "target" => "chat",
             "type" => 4
         ];
+        return $body;
+    }
+    public function ask($query, $tones = Tones::BALANCED){
+        $this->initialize();
+        $body = $this->createBody($query, $tones);
+        $this->clientSocket->send(Formater::format_message(json_encode(["protocol" => "json", "version" =>1])));
+        $this->clientSocket->send(Formater::format_message(json_encode($body)));
+    }
 
-        if($_ENV["debug"])
-            echo "Sending request...\n";
-        $dispatcher = new EventDispatcher;
-        $socketClient = new ClientSocket('wss://sydney.bing.com/sydney/ChatHub?sec_access_token=' . urlencode($this->convSignature), $dispatcher);
-        $socketClient->send(Formater::format_message(json_encode(["protocol" => "json", "version" =>1])));
-        $socketClient->send(Formater::format_message(json_encode($body)));
-
-        $data = [];
-        $dispatcher->addListener("message", function(MessageEvent $event) use (&$data, $socketClient){
-            $d =  Formater::decode_message($event->getData());
-            if(isset($d["arguments"][0]["messages"][0])){
-                $data = $d["arguments"][0]["messages"][0];
-                if(isset($data["suggestedResponses"])){
-                    $socketClient->stop();
+    public function getReponse(){
+        $this->dispatcher->addListener("message", function(MessageEvent $event){
+            $data=  Formater::decode_message($event->getData());
+            if(isset($data["arguments"][0]["messages"][0])){
+                $this->response = $data["arguments"][0]["messages"][0];
+                if(isset($this->response["suggestedResponses"])){
+                    $this->clientSocket->stop();
                 }
             }
         });
-        $socketClient->run();
-        return $data;
+        $this->clientSocket->run();
+        return $this->response;
     }
 }

@@ -3,7 +3,7 @@
 namespace Fakell\Bing\Constant;
 
 
-interface Tones {
+class Tones {
 
     const CREATIVE = "Creative";
     const BALANCED = "Balanced";
