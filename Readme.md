@@ -33,14 +33,122 @@ require __DIR__ . "/vendor/autoload.php";
 // Create an instance of the Bing class
 $bing = new Bing;
 
-// Enable debug mode (optional)
-$bing->debug(true);
 
 // Make a request to Bing AI
-$data = $bing->ask("Hello world!");
+$bing->ask("Hello world!", Tones::CREATIVE);
 
 // Display the response data
-print_r($data);
+$response = $bing->getResponse();
+print_r($response);
+```
+Response example : 
+```
+Array
+(
+    [text] => Hello! 🌎
+    [author] => bot
+    [createdAt] => 2024-04-03T01:03:32.0349726+00:00
+    [timestamp] => 2024-04-03T01:03:32.0349726+00:00
+    [messageId] => 449951c5-76f4-46d2-becd-5212ee627ff3
+    [requestId] => 2fb1546f775cb27d171741ae9cd8195a
+    [offense] => None
+    [adaptiveCards] => Array
+        (
+            [0] => Array
+                (
+                    [type] => AdaptiveCard
+                    [version] => 1.0
+                    [body] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [type] => TextBlock
+                                    [text] => Hello! 🌎
+
+                                    [wrap] => 1
+                                )
+
+                        )
+
+                )
+
+        )
+
+    [sourceAttributions] => Array
+        (
+        )
+
+    [feedback] => Array
+        (
+            [tag] => 
+            [updatedOn] => 
+            [type] => None
+        )
+
+    [contentOrigin] => DeepLeo
+    [suggestedResponses] => Array
+        (
+            [0] => Array
+                (
+                    [text] => Hi there!
+                    [author] => user
+                    [createdAt] => 2024-04-03T01:03:33.3900432+00:00
+                    [timestamp] => 2024-04-03T01:03:33.3900432+00:00
+                    [messageId] => 02ecee3f-b62d-4db2-849c-700fc0b7ef90
+                    [messageType] => Suggestion
+                    [offense] => Unknown
+                    [feedback] => Array
+                        (
+                            [tag] => 
+                            [updatedOn] => 
+                            [type] => None
+                        )
+
+                    [contentOrigin] => SuggestionChipsFalconService
+                )
+
+            [1] => Array
+                (
+                    [text] => Greetings!
+                    [author] => user
+                    [createdAt] => 2024-04-03T01:03:33.390047+00:00
+                    [timestamp] => 2024-04-03T01:03:33.390047+00:00
+                    [messageId] => fd477fca-7a2c-4efe-bcf2-0138c19462b7
+                    [messageType] => Suggestion
+                    [offense] => Unknown
+                    [feedback] => Array
+                        (
+                            [tag] => 
+                            [updatedOn] => 
+                            [type] => None
+                        )
+
+                    [contentOrigin] => SuggestionChipsFalconService
+                )
+
+            [2] => Array
+                (
+                    [text] => What can I help you with?
+                    [author] => user
+                    [createdAt] => 2024-04-03T01:03:33.3900483+00:00
+                    [timestamp] => 2024-04-03T01:03:33.3900483+00:00
+                    [messageId] => 9ce7eaf7-739f-4e79-b57e-acb43872b4c7
+                    [messageType] => Suggestion
+                    [offense] => Unknown
+                    [feedback] => Array
+                        (
+                            [tag] => 
+                            [updatedOn] => 
+                            [type] => None
+                        )
+
+                    [contentOrigin] => SuggestionChipsFalconService
+                )
+
+        )
+
+)
+
 ```
 
 ## Support
@@ -56,4 +164,4 @@ Nombana Fahendrena FIOMBONANTSOA
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the  GPL-3.0 license.

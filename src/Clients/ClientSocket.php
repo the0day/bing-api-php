@@ -2,10 +2,11 @@
 
 namespace Fakell\Bing\Clients;
 
-use Fakell\Bing\MessageEvent;
-use Ratchet\Client\WebSocket;
-use Ratchet\Client\Connector;
+use Fakell\Bing\Message;
 use React\EventLoop\Loop;
+use Fakell\Bing\MessageEvent;
+use Ratchet\Client\Connector;
+use Ratchet\Client\WebSocket;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ClientSocket
@@ -31,12 +32,11 @@ class ClientSocket
                 function (WebSocket $conn) {
                     $this->websocket = $conn;
                     $conn->on('message', function ($msg) {
-                        $this->dispacther->dispatch(new MessageEvent($msg), "message");
+                        $this->dispacther->dispatch(new Message($msg), Message::NAME);
                     });
 
                     $conn->on('close', function ($code = null, $reason = null) { 
-                        if($_ENV["debug"])
-                            echo "Connection closed (code {$code} - reason: {$reason})\n";
+                        error_log("Connection closed (code {$code} - reason: {$reason})\n");
                         $this->stop();
                     });
 

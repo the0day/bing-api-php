@@ -1,10 +1,10 @@
 <?php
 namespace Fakell\Bing;
-use Fakell\Bing\Constant\Defaults;
-use Fakell\Bing\Constant\Tones;
-use Fakell\Bing\MessageEvent;
-use Fakell\Bing\Utils\Formater;
+use Fakell\Bing\Message;
 use Fakell\Bing\Clients\Client;
+use Fakell\Bing\Constant\Tones;
+use Fakell\Bing\Utils\Formater;
+use Fakell\Bing\Constant\Defaults;
 use Fakell\Bing\Clients\ClientSocket;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -21,11 +21,6 @@ class Bing {
     public function __construct(){
         $this->client = new Client;
         $this->dispatcher = new EventDispatcher;
-        $this->debug();
-    }
-
-    public function debug($bool = false){
-        $_ENV["debug"] = $bool;
     }
 
     private function initialize(){
@@ -95,8 +90,8 @@ class Bing {
         $this->clientSocket->send(Formater::format_message(json_encode($body)));
     }
 
-    public function getReponse(){
-        $this->dispatcher->addListener("message", function(MessageEvent $event){
+    public function getResponse(){
+        $this->dispatcher->addListener(Message::NAME, function(Message $event){
             $data=  Formater::decode_message($event->getData());
             if(isset($data["arguments"][0]["messages"][0])){
                 $this->response = $data["arguments"][0]["messages"][0];
