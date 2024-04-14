@@ -18,17 +18,24 @@ class Bing {
     private ClientSocket $clientSocket;
     private $response = [];
 
-    public function __construct(){
-        $this->client = new Client;
+    public function __construct($cookie = null){
+        $this->client = new Client($cookie);
         $this->dispatcher = new EventDispatcher;
+        
     }
 
-    private function initialize(){
+    public function initialize(){
         try {
-            $res = $this->client->send("GET", "turing/conversation/create?bundleVersion=1.1655.1");
-            $this->conversation = json_decode($res->getBody()->getContents(), true);
-            $this->convSignature = $res->getHeaders()["X-Sydney-EncryptedConversationSignature"][0];
+            if(empty($this->conversation) || empty($this->convSignature)){
+                $res = $this->client->send("GET", "https://copilot.microsoft.com/turing/conversation/create?bundleVersion=1.1688.0");
+                $this->conversation = json_decode($res->getBody()->getContents(), true);
+                $this->convSignature = $res->getHeaders()["X-Sydney-EncryptedConversationSignature"][0];
+            }
             $this->clientSocket = new ClientSocket('wss://sydney.bing.com/sydney/ChatHub?sec_access_token=' . urlencode($this->convSignature), $this->dispatcher);
+            return [
+                "conversation" => $this->conversation,
+                "convSignature" => $this->convSignature
+            ];
         } catch (GuzzleException $e) {
             throw new \Exception("Can't create conversation.\n\nReason : " . $e->getMessage());
         }
@@ -83,7 +90,12 @@ class Bing {
         ];
         return $body;
     }
-    public function ask($query, $tones = Tones::BALANCED){
+
+    public function ask($query, $tones = Tones::BALANCED, $options = []){
+        if(isset($options["conversation"]) && isset($options["conSignature"])){
+            $this->conversation = $options["conversation"];
+            $this->convSignature = $options["convSignature"];
+        }
         $this->initialize();
         $body = $this->createBody($query, $tones);
         $this->clientSocket->send(Formater::format_message(json_encode(["protocol" => "json", "version" =>1])));
@@ -96,6 +108,10 @@ class Bing {
             if(isset($data["arguments"][0]["messages"][0])){
                 $this->response = $data["arguments"][0]["messages"][0];
                 if(isset($this->response["suggestedResponses"])){
+                    $this->response["options"] = [
+                        "conversation" => $this->conversation,
+                        "convSignature" => $this->convSignature
+                    ];
                     $this->clientSocket->stop();
                 }
             }
