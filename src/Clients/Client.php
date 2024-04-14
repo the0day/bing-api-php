@@ -17,7 +17,7 @@ class Client {
     private $cookie;
 
     public function __construct($cookie = null){
-        $this->$cookie = $cookie;
+        $this->cookie = $cookie;
         $this->client = $this->defaultHttpClient();
     }
 
@@ -32,7 +32,8 @@ class Client {
     }
 
     private function defaultHttpClient() : ClientInterface {
-        $headers = array_merge(Defaults::HEDEARS, ["cookie" => $this->cookie]);
+        $headers = array_merge(Defaults::HEDEARS, ["Cookie" => $this->cookie]);
+        print_r($headers);
         return new \GuzzleHttp\Client([
             "base_uri" => self::BASE_URI,
             "timeout" => self::DEFAULT_TIMEOUT,
