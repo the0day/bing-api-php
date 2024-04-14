@@ -92,7 +92,7 @@ class Bing {
     }
 
     public function ask($query, $tones = Tones::BALANCED, $options = []){
-        if(isset($options["conversation"]) && isset($options["conSignature"])){
+        if(isset($options["conversation"]) && isset($options["convSignature"])){
             $this->conversation = $options["conversation"];
             $this->convSignature = $options["convSignature"];
         }
