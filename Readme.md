@@ -26,6 +26,7 @@ Now, let's demonstrate how to use the Bing AI API with a simple example. Add the
 
 ```php
 use Fakell\Bing\Bing;
+use Fakell\Bing\Constant\Tones;
 
 // Include the Composer autoloader
 require __DIR__ . "/vendor/autoload.php";
