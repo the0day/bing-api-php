@@ -33,7 +33,6 @@ class Client {
 
     private function defaultHttpClient() : ClientInterface {
         $headers = array_merge(Defaults::HEDEARS, ["Cookie" => $this->cookie]);
-        print_r($headers);
         return new \GuzzleHttp\Client([
             "base_uri" => self::BASE_URI,
             "timeout" => self::DEFAULT_TIMEOUT,
