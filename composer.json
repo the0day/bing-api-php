@@ -28,7 +28,7 @@
     "require": {
         "php": ">=7.2.5",
         "guzzlehttp/guzzle": "^7.0",
-        "symfony/event-dispatcher": "^6.3",
+        "symfony/event-dispatcher": "^7.1",
         "react/event-loop": "^1.5",
         "ratchet/pawl": "^0.4.1"
     }
